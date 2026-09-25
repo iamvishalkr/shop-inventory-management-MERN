@@ -72,6 +72,13 @@ export const auth = betterAuth({
         google: {
             clientId: process.env.GOOGLE_CLIENT_ID!,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+            redirectURI:'https://shop-inventory-management-tf5j.onrender.com/api/auth/callback/google'
+            // redirectURI:'https://oneshoppos.iamvkr.in/api/auth/callback/google'
         },
     },
+    advanced: {
+        cookie: {
+            allowSubdomains: true // Allows auth cookies to shared across *.mydomain.in subdomains
+        }
+    }
 });
