@@ -7,11 +7,18 @@ import { errorHandler } from "./middleware/error-handler.middleware.js";
 import { generalLimiter } from "./middleware/rate-limiter.middleware.js";
 import { connectDB } from "./lib/db.js";
 import testSeedProducts from "./utils/testSeedProducts.js";
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const publicPath = path.join(__dirname,'..', 'public'); 
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 const clientUrl = process.env.CLIENT_URL ?? "http://localhost:3000";
 
+app.use(express.static(publicPath));
 
 app.use(
     cors({
@@ -28,9 +35,9 @@ app.use("/api/auth", authRoutes);
 // Apply generous rate limit to all other routes
 app.use(generalLimiter);
 
-app.get("/", (req, res) => {
-    res.send("Hello World");
-});
+// app.get("/", (req, res) => {
+//     res.send("Hello World");
+// });
 
 app.get("/health", (_req, res) => {
     res.json({ status: "ok" });
@@ -50,6 +57,16 @@ app.get("/seedProducts", async (req, res, next) => {
 
 
 registerRoutes(app);
+
+// app.use(express.static(publicPath, { extensions: ['html'] }));
+
+// app.get('/:locale/*splat', (req, res) => {
+//     res.sendFile(path.join(publicPath, 'index.html'));
+// });
+
+app.get('*name', (req, res) => {
+    res.sendFile(path.join(publicPath, 'index.html'));
+});
 
 app.use(errorHandler)
 
