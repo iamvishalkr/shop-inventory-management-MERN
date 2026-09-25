@@ -76,9 +76,4 @@ export const auth = betterAuth({
             // redirectURI:'https://oneshoppos.iamvkr.in/api/auth/callback/google'
         },
     },
-    advanced: {
-        cookie: {
-            allowSubdomains: true // Allows auth cookies to shared across *.mydomain.in subdomains
-        }
-    }
 });
