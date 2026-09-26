@@ -65,7 +65,7 @@ export const auth = betterAuth({
                 verificationUrl += (verificationUrl.includes("?") ? "&" : "?") + "callbackURL=" + encodeURIComponent(fullCallbackUrl);
             }
 
-            emailService.sendVerificationEmail(user.email, user.name, verificationUrl);
+            await emailService.sendVerificationEmail(user.email, user.name, verificationUrl);
         },
     },
     socialProviders: {

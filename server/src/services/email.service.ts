@@ -15,9 +15,22 @@ export class EmailService {
             }
         })();
     }
+    private async sendMail(options: nodemailer.SendMailOptions) {
+        try {
+            const info = await transporter.sendMail({
+                from: `"Shop App" <${process.env.SMTP_USER!}>`,
+                ...options,
+            });
+            console.log(`[Email Service] Email sent successfully to ${options.to}: ${info.messageId}`);
+            return true;
+        } catch (error) {
+            console.error(`[Email Service Error] Failed to send email to ${options.to}:`, error);
+            return false
+        }
+    }
 
-    sendVerificationEmail(email: string, name: string, url: string) {
-        this.sendMailInBackground({
+    async sendVerificationEmail(email: string, name: string, url: string) {
+        await this.sendMail({
             to: email,
             subject: "Verify your email address",
             html: `
