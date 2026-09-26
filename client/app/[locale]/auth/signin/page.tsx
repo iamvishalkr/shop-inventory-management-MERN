@@ -352,15 +352,15 @@ function SigninForm() {
           <CardTitle className="text-sm font-semibold">
             {mode === "signin" ? "Sign In" : "Create an Account"}
           </CardTitle>
-          {/* <CardDescription className="text-[11px] text-muted-foreground">
+          <CardDescription className="text-[11px] text-muted-foreground">
             {mode === "signin"
               ? "Enter your email below to log into your account"
               : "Enter your details below to create your account"}
-          </CardDescription> */}
+          </CardDescription>
         </CardHeader>
 
         <CardContent>
-          <form hidden={true} onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {errorMsg && (
               <Alert variant="destructive" className="mb-2">
                 <AlertCircle className="h-4 w-4" />
@@ -481,14 +481,14 @@ function SigninForm() {
             </Button>
           </form>
 
-          {/* <div className="relative flex items-center justify-center my-4">
+          <div className="relative flex items-center justify-center my-4">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t border-border" />
             </div>
             <span className="relative bg-card px-2 text-[10px] uppercase text-muted-foreground font-medium">
               Or continue with
             </span>
-          </div> */}
+          </div>
 
           <Button
             variant="outline"
