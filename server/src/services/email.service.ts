@@ -1,42 +1,59 @@
 import nodemailer from "nodemailer";
-import { transporter } from "../lib/email.js";
+import { resend, transporter } from "../lib/email.js";
 
 export class EmailService {
-    private sendMailInBackground(options: nodemailer.SendMailOptions) {
-        (async () => {
-            try {
-                const info = await transporter.sendMail({
-                    from: `"Shop App" <${process.env.SMTP_USER!}>`,
-                    ...options,
-                });
-                console.log(`[Email Service] Email sent successfully to ${options.to}: ${info.messageId}`);
-            } catch (error) {
-                console.error(`[Email Service Error] Failed to send email to ${options.to}:`, error);
-            }
-        })();
+  private sendMailInBackground(options: nodemailer.SendMailOptions) {
+    (async () => {
+      try {
+        const info = await transporter.sendMail({
+          from: `"Shop App" <${process.env.SMTP_USER!}>`,
+          ...options,
+        });
+        console.log(
+          `[Email Service] Email sent successfully to ${options.to}: ${info.messageId}`
+        );
+      } catch (error) {
+        console.error(
+          `[Email Service Error] Failed to send email to ${options.to}:`,
+          error
+        );
+      }
+    })();
+  }
+  private async sendMail(options: {
+    to: string;
+    subject: string;
+    html: string;
+  }) {
+    try {
+      const { data, error } = await resend.emails.send({
+        from: `Shop App <${process.env.SMTP_USER!}`,
+        ...options,
+      });
+      if (error) {
+        throw new Error("failed to send Email with resend");
+      }
+      console.log(`[Email Service] [Resend] Email sent successfully to ${options.to} ${data.id}`);
+      return true;
+    } catch (error) {
+      console.error(
+        `[Resend Email Service Error] Failed to send email to ${options.to}:`,
+        error
+      );
+      return false;
     }
-    private async sendMail(options: nodemailer.SendMailOptions) {
-        try {
-            const info = await transporter.sendMail({
-                from: `"Shop App" <${process.env.SMTP_USER!}>`,
-                ...options,
-            });
-            console.log(`[Email Service] Email sent successfully to ${options.to}: ${info.messageId}`);
-            return true;
-        } catch (error) {
-            console.error(`[Email Service Error] Failed to send email to ${options.to}:`, error);
-            return false
-        }
-    }
+  }
 
-    async sendVerificationEmail(email: string, name: string, url: string) {
-        await this.sendMail({
-            to: email,
-            subject: "Verify your email address",
-            html: `
+  async sendVerificationEmail(email: string, name: string, url: string) {
+    await this.sendMail({
+      to: email,
+      subject: "Verify your email address",
+      html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
                     <h2 style="color: #333; margin-bottom: 16px;">Verify your Email Address</h2>
-                    <p style="color: #555; line-height: 1.5;">Hi ${name || "there"},</p>
+                    <p style="color: #555; line-height: 1.5;">Hi ${
+                      name || "there"
+                    },</p>
                     <p style="color: #555; line-height: 1.5;">Thank you for signing up for Shop App. Please click the button below to verify your email address and activate your account: (Valid for 15 Minutes)</p>
                     <div style="margin: 24px 0;">
                         <a href="${url}" style="background-color: #09090b; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-block;">Verify Email Address</a>
@@ -47,17 +64,19 @@ export class EmailService {
                     <p style="color: #999; font-size: 12px;">If you did not request this email, please ignore it.</p>
                 </div>
             `,
-        });
-    }
+    });
+  }
 
-    sendResetPasswordEmail(email: string, name: string, url: string) {
-        this.sendMailInBackground({
-            to: email,
-            subject: "Reset your password",
-            html: `
+  sendResetPasswordEmail(email: string, name: string, url: string) {
+    this.sendMailInBackground({
+      to: email,
+      subject: "Reset your password",
+      html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
                     <h2 style="color: #333; margin-bottom: 16px;">Reset Your Password</h2>
-                    <p style="color: #555; line-height: 1.5;">Hi ${name || "there"},</p>
+                    <p style="color: #555; line-height: 1.5;">Hi ${
+                      name || "there"
+                    },</p>
                     <p style="color: #555; line-height: 1.5;">We received a request to reset your account password. Click the button below to set a new password:</p>
                     <div style="margin: 24px 0;">
                         <a href="${url}" style="background-color: #09090b; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-block;">Reset Password</a>
@@ -68,8 +87,8 @@ export class EmailService {
                     <p style="color: #999; font-size: 12px;">If you did not request a password reset, please ignore this email.</p>
                 </div>
             `,
-        });
-    }
+    });
+  }
 }
 
 export const emailService = new EmailService();

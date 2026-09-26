@@ -1,4 +1,5 @@
 import nodemailer, { type TransportOptions } from "nodemailer";
+import { Resend } from 'resend';
 
 const smtpPort = Number(process.env.SMTP_PORT || 465);
 export const transporter = nodemailer.createTransport({
@@ -10,3 +11,7 @@ export const transporter = nodemailer.createTransport({
         pass: process.env.SMTP_PASS,
     } : null,
 } as TransportOptions);
+
+
+
+export const resend = new Resend(process.env.RESEND_API_KEY);
