@@ -27,7 +27,7 @@ export class EmailService {
   }) {
     try {
       const { data, error } = await resend.emails.send({
-        from: `Shop App <${process.env.SMTP_USER!}`,
+        from: `Shop App <${process.env.SMTP_USER!}>`,
         ...options,
       });
       if (error) {

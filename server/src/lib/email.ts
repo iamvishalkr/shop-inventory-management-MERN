@@ -14,9 +14,4 @@ export const transporter = nodemailer.createTransport({
 
 
 const api_key = process.env.RESEND_API_KEY;
-if (api_key) {
-    console.log("GOT API KEY");
-}else{
-    console.log("API KEY NOT FOUND");
-}
 export const resend = new Resend(api_key);
