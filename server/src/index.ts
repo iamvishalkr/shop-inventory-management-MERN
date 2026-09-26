@@ -17,6 +17,7 @@ const publicPath = path.join(__dirname,'..', 'public');
 const app = express();
 const PORT = process.env.PORT || 4000;
 const clientUrl = process.env.CLIENT_URL ?? "http://localhost:3000";
+app.set('trust proxy', 1); 
 
 app.use(express.static(publicPath));
 
